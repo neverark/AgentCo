@@ -8,6 +8,7 @@ coverage/
 .turbo/
 playwright-report/
 test-results/
+*.tsbuildinfo
 
 # Local configuration and credentials
 .env

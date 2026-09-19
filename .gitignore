@@ -1,0 +1,35 @@
+# Dependencies and generated output
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.cache/
+.turbo/
+playwright-report/
+test-results/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+
+# Local runtime data
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+.venv/
+__pycache__/
+
+# Local tools and operating system files
+.DS_Store
+.idea/
+.vscode/
+.codex/
+.agents/

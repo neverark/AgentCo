@@ -1,48 +1,63 @@
 # AgentCo
 
+**English** | [简体中文](README.zh-CN.md)
+
 **Intelligence, well spent.** An interactive AI procurement demo: choose services, control spending, and inspect the evidence.
 
-AgentCo 是面向 OKX Dev Day 的 AI 服务采购工作台：给出代币、预算和采购策略，比较服务，预留费用，检查结果，再交付带证据的风险快照。本仓库已实现可运行的 React + TypeScript + Vite 本地视觉 demo。
+AgentCo is an AI service procurement workspace built for OKX Dev Day. Give it a token, a budget, and a procurement policy; it compares services, reserves costs, checks results, and delivers a token risk snapshot with supporting evidence. This repository contains a working local demo built with React, TypeScript, and Vite.
 
-**全部数据均为模拟。** Scout、Sentinel、Atlas、Lens 是四个虚构供应商；价格、评分、历史、分析结果和支付记录均为合成数据。遵循用户明确要求，应用不会连接钱包、签名、调用收费 API 或转移真实资金。真实 OKX AI 集成属于未来工作，不是本次 demo 的交付内容。
+**Everything is simulated.** Scout, Sentinel, Atlas, and Lens are fictional providers. Prices, ratings, histories, findings, and payment records are synthetic. As requested, the app does not connect to a wallet, sign transactions, call paid APIs, or transfer real funds. No credentials are required. Real OKX AI integration is future work and is not part of this demo.
 
-All providers and results are fictional fixtures. The app runs locally without wallet access, paid API calls, or real transfers. No credentials are needed.
+## Run locally
 
-## 本地运行
-
-需要 **Node.js 22.18 或更高版本**。
+Requires **Node.js 22.18 or later**.
 
 ```bash
 npm install
 npm run dev
 ```
 
-打开 [localhost:5173](http://localhost:5173)。如果 5173 端口被占用，可运行 `npm run dev -- --port 5174`。
+Open [localhost:5173](http://localhost:5173). If port 5173 is in use, run `npm run dev -- --port 5174`.
+
+To build and preview the production bundle:
 
 ```bash
 npm run build
-npm test
+npm run preview
 ```
 
-构建输出为 `dist/`。测试覆盖整数预算账本、策略选择、预算与时限边界、单次备用调用、重复验证、超时对账和历史反馈。
+The build output is in `dist/`. The production preview runs at [localhost:4173](http://localhost:4173).
 
-## 可以演示什么
+To run the checks:
 
-- **三种策略**：`Lowest cost`、`Balanced`、`High assurance`，实时比较入选服务、预计费用与最高费用。
-- **三种情景**：`Successful delivery`、`Verification mismatch`、`Response timeout`，支持暂停、逐步推进和重置。
-- **预算与证据**：`Execution journal` 展示预留、支出、释放及验证过程；报告可 `Export evidence` 为 JSON，事件可复制 JSON。
-- **服务与记录**：`Agent directory` 支持搜索和筛选；`Run history` 与 `Treasury` 展示完成的模拟运行和支出。
+```bash
+npm test
+npm run typecheck
+```
 
-浏览器本地最多保存 **30 条运行记录**，与种子样本一起影响后续服务选择。`New task` 和 `Reset run` 不清除历史；使用新的浏览器配置或隐私窗口可重现初始示例。默认 0.50 USDT / 45 秒 / 初始历史下，Balanced 成功支出 0.22，含备用和再次验证的最高支出为 0.38。所有金额都是模拟记账单位。
+Tests cover the integer budget ledger, policy selection, budget and deadline boundaries, a single fallback, repeat verification, timeout reconciliation, and history feedback.
 
-- [三分钟演示脚本](docs/demo-walkthrough.md)
-- [产品说明：初始提案与当前实现](docs/product-brief.md)
-- [界面设计：初始提案与当前实现](docs/demo-design.md)
+## What you can demonstrate
 
-## 参考资料
+- **Three policies:** `Lowest cost`, `Balanced`, and `High assurance`. Compare selected services, expected spending, and the maximum allowed cost as you change the plan.
+- **Three scenarios:** `Successful delivery`, `Verification mismatch`, and `Response timeout`, with pause, step-by-step playback, and reset controls.
+- **Budgets and evidence:** The `Execution journal` shows reservations, spending, releases, and verification. Use `Export evidence` to download a report as JSON, or copy an individual event as JSON.
+- **Providers and records:** Search and filter the `Agent directory`; review completed simulations and spending in `Run history` and `Treasury`.
 
-- [活动页面](https://luma.com/l4aq8vii)
+The browser retains up to **30 runs** locally. Their observations combine with seeded samples to influence future provider selection. `New task` and `Reset run` preserve this history; use a fresh browser profile or private window to reproduce the initial example. With the default 0.50 USDT budget, 45-second deadline, and seeded history, a successful Balanced run costs 0.22, while its maximum cost with fallback and repeat verification is 0.38. All amounts are simulated ledger units.
+
+## Documentation
+
+Every document has a complete English and Simplified Chinese version, linked at the top of each file.
+
+- [Three-minute demo walkthrough](docs/demo-walkthrough.md)
+- [Product brief: original proposal and current implementation](docs/product-brief.md)
+- [Visual and demo design: original proposal and current implementation](docs/demo-design.md)
+
+## References
+
+- [Event page](https://luma.com/l4aq8vii)
 - [OKX Builder Kit](https://www.okx.com/en-sg/learn/okx-dev-day-builder-kit)
-- [用户提供的 AgentCo MVP 讨论](https://chatgpt.com/share/6aae7f96-13bc-83ec-b2a3-2a317c76cae7)
+- [User-provided AgentCo MVP discussion](https://chatgpt.com/share/6aae7f96-13bc-83ec-b2a3-2a317c76cae7)
 
-原始资料整理日期：2026-09-20。文档中的参赛与平台资料是背景信息，不代表本 demo 已完成平台集成或参赛提交。
+Original research date: September 20, 2026. Event and platform details in these documents provide background; they do not mean this demo has completed platform integration or a hackathon submission.

@@ -1,87 +1,91 @@
-# AgentCo 视觉与演示设计：初始提案与当前实现
+# AgentCo visual and demo design: original proposal and current implementation
 
-初始设计目标：让评委在数十秒内理解“AI 如何采购服务并对支出负责”。本文保留设计依据；以下记录实际实现，后面的布局草图和色值是初始提案。
+**English** | [简体中文](demo-design.zh-CN.md)
 
-## 当前实现
+The original design goal was to help judges understand, within a few seconds, how AI procures services and accounts for its spending. This document preserves the design rationale. The next section records what was implemented; the layout sketch and color values that follow come from the original proposal.
 
-已实现 React + TypeScript + Vite 本地界面，以浅色工作区、深蓝正文、蓝色操作和清楚的金额层级组织采购流程。页面包含 `Workspace`、`Agent directory`、`Run history` 和 `Treasury`；报告、供应商资料、策略比较和事件详情使用模态对话框。
+## Current implementation
 
-工作台提供链与代币输入、预算与交付时限、三种策略、服务表格、预算分配带及 `Execution journal`。运行支持暂停、继续、逐步推进和 `Reset run`；可切换成功、验证不一致、响应超时三种模拟情景。报告支持 `Export evidence`，事件支持 `Copy event JSON`。
+The local React, TypeScript, and Vite interface organizes procurement around a light workspace, dark navy text, blue actions, and a clear hierarchy for monetary values. It includes `Workspace`, `Agent directory`, `Run history`, and `Treasury`. Reports, provider profiles, policy comparisons, and event details open in modal dialogs.
 
-遵循用户“不要发起任何付费操作”的要求，所有数据、收费、历史与支付记录都是本地模拟。界面显示 `Demo environment` 和 `Simulation only. No real funds.`；真实 OKX 集成不属于本次交付。最近 30 条运行存储于当前浏览器，模拟验收结果会影响后续供应商选择。`New task` 与 `Reset run` 保留这些历史。
+The workspace provides chain and token inputs, a budget and delivery deadline, three policies, a service table, a budget allocation bar, and an `Execution journal`. Runs support pause, resume, step-by-step playback, and `Reset run`. Three simulated scenarios cover success, verification disagreement, and a response timeout. Reports offer `Export evidence`; events offer `Copy event JSON`.
 
-最新讲解流程与初始成本见 [2–4 分钟演示脚本](demo-walkthrough.md)。
+Following the user's requirement to avoid paid operations, all data, charges, histories, and payment records are simulated locally. The UI displays `Demo environment` and `Simulation only. No real funds.` Real OKX integration is outside this delivery. The current browser retains the latest 30 runs, and their simulated acceptance outcomes influence future provider selection. `New task` and `Reset run` preserve that history.
 
-## 主画面
+See the [2–4 minute demo walkthrough](demo-walkthrough.md) for the current presentation flow and initial costs.
 
-以可操作的采购工作台为中心。首屏就能输入任务、查看候选、切换策略并运行流程。品牌表达围绕一笔任务的资金与证据展开。
+## Main view
+
+The design centers on an interactive procurement workspace. Its opening view lets users define a task, inspect candidates, switch policies, and start execution. The product's visual identity revolves around the budget and evidence for one task.
 
 ```text
-┌──────────────────────────────────────────────────────────────────┐
-│ AgentCo               任务工作台 / 调用记录           Demo mode  │
-├──────────────┬────────────────────────────────┬──────────────────┤
-│ 任务         │ 服务比较                       │ 本次采购预算     │
-│ 链与代币     │ 价格 · 能力 · 实测记录 · 样本量 │ 已花 / 预留 / 可用│
-│ 预算与时限   │ 入选方案 + 可阅读的选择原因     │ 费用明细         │
-│ 采购策略     ├────────────────────────────────┤                  │
-│              │ 采购 → 执行 → 验证 → 报告      │ 本次验收状态     │
-│ 运行分析     │ 每一步与资金、结果关联         │ 可展开的证据     │
-├──────────────┴────────────────────────────────┴──────────────────┤
-│ 事件时间线：预留、调用、支付状态、验证、释放预留、完成             │
-└──────────────────────────────────────────────────────────────────┘
++--------------------------------------------------------------------------------+
+| AgentCo                   Workspace / Invocation records             Demo mode  |
++------------------+------------------------------------+------------------------+
+| TASK             | SERVICE COMPARISON                 | PROCUREMENT BUDGET     |
+| Chain and token  | Price / capabilities / measured    | Spent / reserved /     |
+| Budget, deadline | history / sample count             | available              |
+| Policy           | Selected plan and its rationale    | Cost breakdown         |
+|                  +------------------------------------+                        |
+| Run analysis     | Procure -> execute -> verify       | Acceptance status      |
+|                  | -> report                          | Expandable evidence    |
+|                  | Each step tied to costs and results|                        |
++------------------+------------------------------------+------------------------+
+| EVENT TIMELINE: reserve, call, payment status, verify, release, complete         |
++--------------------------------------------------------------------------------+
 ```
 
-布局比较：候选比较与执行放在同一工作台，让主流程无需来回切页；独立服务目录用于查看能力和模拟历史。初始草图建议抽屉，最终采用模态对话框展示事件与证据。窄屏按区域重排，并提供可展开导航。
+Layout rationale: keeping candidate comparison and execution in the same workspace avoids switching pages during the main flow. A separate directory provides capabilities and simulated history. The original sketch proposed drawers; the implementation uses modal dialogs for events and evidence. On narrow screens, sections rearrange and navigation can be expanded.
 
-## 视觉语言
+## Visual language
 
-方向：精密、清楚、带有编辑感的金融工具。浅色工作区配深蓝文字，蓝色仅承担选择和行动，资金预留与验证状态具有独立语义。
+The direction is a precise, clear financial tool with an editorial feel. A light workspace pairs with navy text. Blue identifies selection and actions; reservations and verification states have their own color meanings.
 
-| 色彩 | 值 | 用途 |
+| Color | Value | Purpose |
 | --- | --- | --- |
-| Porcelain | `#F3F5F7` | 页面画布 |
-| Ink navy | `#152238` | 主要文本与强对比区域 |
-| Cobalt | `#355DFF` | 操作、选中方案与焦点 |
-| Teal | `#0F766E` | 验证通过与有证据的完成 |
-| Amber | `#A16207` | 预算预留与待核实状态 |
-| Vermilion | `#B43B37` | 验证失败与执行阻断 |
+| Porcelain | `#F3F5F7` | Page canvas |
+| Ink navy | `#152238` | Primary text and high-contrast areas |
+| Cobalt | `#355DFF` | Actions, selected plans, and focus |
+| Teal | `#0F766E` | Passed verification and completion supported by evidence |
+| Amber | `#A16207` | Budget reservations and pending checks |
+| Vermilion | `#B43B37` | Verification failures and blocked execution |
 
-字体提案：Manrope 用于少量标题，IBM Plex Sans 用于界面正文，IBM Plex Mono 用于金额、时间与回执标识；中文优先使用系统无衬线字体。最终实现需检查字重、回退、加载与对比度。
+Typography proposal: Manrope for selected headings, IBM Plex Sans for interface text, and IBM Plex Mono for amounts, times, and receipt identifiers. Chinese text should prefer a system sans-serif font. Font weights, fallbacks, loading, and contrast should be checked in the final implementation.
 
-主标题约 32px，区域标题约 20px，正文以 16px 为基准；金额使用等宽数字。表格密度服务于比较，首屏留白服务于解释，不以堆叠统计卡片表现复杂度。
+The original scale proposed a main heading around 32px, section headings around 20px, and a 16px base for body text. Amounts use tabular numerals. Table density supports comparison, while whitespace in the opening view supports explanation; stacks of statistics cards are not the main way to convey complexity.
 
-## 最值得记住的视觉元素
+## The defining visual element
 
-**一条与当前模拟执行状态同步的预算分配带。**
+**A budget allocation bar synchronized with the current simulated execution state.**
 
-预算从“可用”划入“预留”，确认支出后划入“已花”；选择的服务和验证步骤与对应金额关联。任务结束时，未用预留回到可用部分。这一变化让人直接看懂 AgentCo 的工作。
+Funds move from available to reserved, then to spent when a charge is confirmed. Selected services and verification steps connect to the corresponding amounts. When the task ends, unused reservations return to the available portion. This transition makes AgentCo's work easy to understand.
 
-动画只由明确状态变化触发：服务入选、资金预留、结果到达、证据通过、备用启动。初始建议微交互约 160–240ms，关键状态过渡约 300–500ms。当前自动演示每 1.25 秒推进一个事件，也可选择 `Start in step-by-step mode`；这只是演示节奏，不是实时服务延迟。
+Animation follows explicit state changes: provider selection, reservation, response arrival, verification, and fallback activation. The initial guidance suggested 160–240ms for microinteractions and 300–500ms for key state transitions. Current automatic playback advances one event every 1.25 seconds, with `Start in step-by-step mode` as an alternative. This is presentation pacing, not actual service latency.
 
-## 核心交互
+## Core interactions
 
-1. **设定任务**：提供可用示例，保留链、代币、预算、时限和策略的可见标签与校验。
-2. **比较服务**：展示能力、模拟报价、模拟验收率与样本量。服务详情将市场星级和任务验收历史分开，并说明种子数据与本地运行都是模拟记录。
-3. **查看方案**：解释入选与排除原因，区分预计支出与最坏费用。策略切换时标明哪些步骤和金额发生改变。
-4. **执行与验收**：运行状态逐步推进，失败与等待都有具体原因。验收显示通过的具体检查项及证据缺口。
-5. **查看交付**：风险快照、支出、证据与记录可以展开查看或导出。重置当前演示保留浏览器中的模拟历史。
+1. **Define the task:** provide a working example and keep visible labels and validation for the chain, token, budget, deadline, and policy.
+2. **Compare services:** show capabilities, simulated quotes, simulated acceptance rates, and sample counts. Provider details distinguish marketplace star ratings from task acceptance history and explain that both seed data and local runs are simulated.
+3. **Inspect the plan:** explain inclusion and exclusion, distinguish expected spending from the maximum cost, and show which steps and amounts change when switching policies.
+4. **Execute and check acceptance:** advance through clear states, explain failures and waiting, and identify the checks that passed and the gaps in evidence.
+5. **Inspect the delivery:** expand or export the risk snapshot, spending, evidence, and records. Resetting the current demonstration preserves simulated browser history.
 
-## 原始演示脚本方向
+## Original presentation outline
 
-约三分钟的产品演示：
+A product demo of roughly three minutes:
 
-- **前 20 秒**：说明用户希望在限定费用内获得有证据的代币风险信息；展示任务与预算。
-- **20–70 秒**：运行 Balanced，解释候选比较与选中原因，展示预算预留、执行、验证和报告。
-- **70–110 秒**：同一任务切换 Lowest cost 与 High assurance，观察采购内容、证据覆盖和费用变化；无法满足条件时明确展示预算不足。
-- **110–150 秒**：在标识清楚的模拟场景中注入验证失败，展示已预留的备用流程与累计支出。
-- **150–180 秒**：打开模拟证据与事件，展示未花预算和本次观察记录；说明没有真实支付或实时行情。
+- **First 20 seconds:** explain the need for token risk information supported by evidence within a spending limit; show the task and budget.
+- **20–70 seconds:** run Balanced, explain candidate comparison and selection, then show reservation, execution, verification, and the report.
+- **70–110 seconds:** switch the same task to Lowest cost and High assurance. Observe changes in services purchased, evidence coverage, and cost; show the insufficient-budget message when requirements cannot be met.
+- **110–150 seconds:** introduce a verification failure in a clearly labeled simulation and show the reserved fallback path and cumulative spending.
+- **150–180 seconds:** open synthetic evidence and events, show unspent budget and observations from the run, and explain that there are no real payments or live market data.
 
-本次整个脚本运行在标识清楚的 Demo 模式。现场可重放性来自固定数据与确定性执行；供应商、价格、历史和发现都不应解释为真实样本。实际操作步骤以 [当前演示脚本](demo-walkthrough.md) 为准。
+This entire script runs in a clearly labeled demo mode. Fixed fixtures and deterministic execution make it repeatable during a presentation. Providers, prices, histories, and findings must not be presented as real observations. Follow the [current walkthrough](demo-walkthrough.md) for the actual operating steps.
 
-## 设计自检
+## Design review
 
-`ui-ux-pro-max` 检索中的企业工作台风格、清楚的表格与状态反馈适用；其自动输出的营销主页结构不适合这个产品，因此未采纳。布局与预算分配带依据 AgentCo 的采购流程设计。
+The enterprise workspace style, clear tables, and state feedback found through `ui-ux-pro-max` were relevant. Its generated marketing homepage structure did not fit this product and was not adopted. The layout and budget allocation bar follow AgentCo's procurement workflow.
 
-实现后的重点检查：键盘可操作、可见焦点、金额对齐、文本对比度、窄屏重排、长地址可查看全文、加载与失败反馈、减少动态效果，以及模拟来源标识。当前没有录制或实时数据模式。
+Review priorities after implementation include keyboard operation, visible focus, aligned amounts, text contrast, narrow-screen layout, access to full addresses, loading and failure feedback, reduced motion, and simulation labels. There is currently no recorded-data or live-data mode.
 
-最终技术栈为 React、TypeScript、Vite、Lucide 图标和本地字体资源。金额、计划、验证与历史反馈由 `src/lib/procurement.ts` 的纯模拟逻辑处理，界面负责展示和播放事件。
+The final stack is React, TypeScript, Vite, Lucide icons, and local font assets. The pure simulation logic in `src/lib/procurement.ts` handles amounts, plans, verification, and history feedback; the interface displays and plays back its events.

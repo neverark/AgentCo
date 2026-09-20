@@ -1,127 +1,129 @@
-# AgentCo 产品说明：初始提案与当前实现
+# AgentCo Product Brief: Initial Proposal and Current Implementation
 
-初始提案整理日期：2026-09-20。本文保留产品方向与参赛资料背景；以下“当前实现”说明本次实际交付，涉及真实平台的章节属于未来方案。
+[English](product-brief.md) | [简体中文](product-brief.zh-CN.md)
 
-## 当前实现
+Initial proposal compiled on 2026-09-20. This document preserves the product direction and hackathon research as background. “Current implementation” below describes this delivery; sections involving live platforms describe future plans.
 
-本仓库已实现 React + TypeScript + Vite 本地 demo：任务输入、三种采购策略、服务比较、预算分配、执行时间线、证据报告、失败与备用流程、超时对账、逐步演示、服务目录、本地历史、支出汇总和 JSON 导出。
+## Current implementation
 
-用户明确要求 **不要发起任何付费操作，必要时模拟收费数据与 API**。因此本次交付完全使用本地确定性引擎；没有连接钱包、签名、收费服务调用或真实转账。Scout、Sentinel、Atlas、Lens 为虚构服务，价格、种子历史、分析和支付记录全部为合成数据。输入真实代币地址也不会查询真实市场信息。
+This repository now contains a local React + TypeScript + Vite demo with task input, three procurement policies, service comparison, budget allocation, an execution timeline, evidence reports, failure and fallback flows, timeout reconciliation, step-by-step playback, a service directory, local history, spending summaries, and JSON export.
 
-浏览器保存最近 30 条运行记录，模拟的验收结果会计入后续方案的供应商表现。选择使用价格、时限及考虑样本量的保守可靠性分数；市场星级单独展示。真实 OKX AI 集成仅作为未来方向，不是本次 demo 的完成条件。运行方式见 [README](../README.md)，现场讲解见 [演示脚本](demo-walkthrough.md)。
+The user explicitly requested **no paid operations; simulate paid data and APIs where necessary**. This delivery therefore uses an entirely local, deterministic engine. It does not connect a wallet, sign anything, call paid services, or transfer real funds. Scout, Sentinel, Atlas, and Lens are fictional services; their prices, seed histories, analyses, and payment records are all synthetic. Entering a real token address does not retrieve real market information.
 
-## 产品是什么
+The browser retains the latest 30 runs. Simulated acceptance results contribute to provider performance in subsequent plans. Selection uses price, deadlines, and a conservative reliability score that accounts for sample size; market star ratings are shown separately. Live OKX AI integration is a future direction, not a completion requirement for this demo. See the [README](../README.md) for setup and the [demo walkthrough](demo-walkthrough.md) for a presentation script.
 
-AgentCo 是一个替用户采购 AI 服务的工作台。用户提出一个具体任务，设定最高采购预算和质量要求，AgentCo 比较可用服务、分配费用、执行调用、检查结果，并解释每项决策。
+## What the product does
 
-可以把它想成一家小型公司的采购经理、财务和质检员：采购经理选供应商，财务控制开销，质检员确认交付符合要求。服务越用越多，AgentCo 越能根据自己测量的记录判断哪些供应商适合哪类任务。
+AgentCo is a workspace that procures AI services on a user's behalf. The user specifies a concrete task, a maximum procurement budget, and quality requirements. AgentCo compares available services, allocates spending, makes calls, checks results, and explains each decision.
 
-初期用户是需要链上研究结果的个人、开发者或其他 Agent。产品价值是让用户同时看清采购依据、实际开销和交付证据。
+Think of it as the purchasing manager, finance team, and quality inspector of a small company: purchasing chooses suppliers, finance controls spending, and quality inspection checks whether the delivery meets the requirements. As services are used, AgentCo can use its own measured records to judge which providers suit which tasks.
 
-本轮以用户分享的 AgentCo MVP 讨论为产品输入。用户消息提到的另一份“复制文本”未随消息附上，尚未纳入。
+The initial users are individuals, developers, or other agents that need onchain research. The product helps them see the basis for procurement decisions, the actual spending, and the evidence behind the delivery together.
 
-## 活动信息（初始资料记录）
+The AgentCo MVP discussion shared by the user is the product input for this iteration. The separate “copied text” mentioned in the user's message was not attached and has not been incorporated.
 
-- 初次整理时，活动页显示报名关闭；线上开发期为 9 月 17–25 日，线下决赛为 10 月 7 日。团队是否已获接纳尚未确认。[活动页](https://luma.com/l4aq8vii)
-- 建议主赛道为 **Build a Company**。该赛道要求通过 OKX AI 发布或集成可工作的服务，并演示完整流程；提交时提供相关服务或集成链接。
-- 当时记录的提交截止为 **2026-09-25 23:59 UTC**，换算新加坡/北京时间是 **2026-09-26 07:59**。材料包括项目说明、评审可访问的代码仓库、2–4 分钟演示视频，以及可用的产品链接。完整参赛交付与当前纯模拟 demo 是不同范围；未来正式提交时应另行核对官方集成要求。[Builder Kit](https://www.okx.com/en-sg/learn/okx-dev-day-builder-kit)
+## Event information (initial research record)
 
-## 首版只完成一个场景
+- When this information was first compiled, the event page showed registration as closed. The online build period was September 17–25, with an in-person final on October 7. Whether the team has been accepted remains unconfirmed. [Event page](https://luma.com/l4aq8vii)
+- The recommended main track is **Build a Company**. That track requires publishing or integrating a working service through OKX AI and demonstrating the complete flow, with the relevant service or integration link included in the submission.
+- The deadline recorded at the time was **2026-09-25 23:59 UTC**, equivalent to **2026-09-26 07:59** in Singapore and Beijing. Submission materials include a project description, a repository accessible to judges, a 2–4 minute demo video, and a working product link. A complete hackathon submission and the current fully simulated demo have different scopes; the official integration requirements should be checked separately before a future submission. [Builder Kit](https://www.okx.com/en-sg/learn/okx-dev-day-builder-kit)
 
-**Verified Token Risk Snapshot：有证据支持的代币风险快照。**
+## One scenario for the first version
 
-用户选择链与代币地址，输入采购预算、交付时限和策略。AgentCo 从小型服务目录中选择合适的风险分析服务，用参考数据核对关键事实，然后交付一份简明报告。当前目录和参考数据均为模拟；不同演示来源不代表已经证明现实中的数据独立性。
+**Verified Token Risk Snapshot: a token risk snapshot supported by evidence.**
 
-报告的验证范围是明确的：代币身份、必要字段、数据时间、流动性和持仓集中度等可核对信息。通过这些检查不等于证明代币安全，也不构成全面审计。界面应逐项显示哪些已验证、哪些缺少证据。
+The user chooses a chain and token address, then supplies a procurement budget, delivery deadline, and policy. AgentCo selects suitable risk analysis services from a small directory, checks key facts against reference data, and delivers a concise report. Both the current directory and its reference data are simulated; separate demo sources do not establish real-world data independence.
+
+The report has a defined verification scope: checkable information such as token identity, required fields, data timestamps, liquidity, and holder concentration. Passing these checks does not prove that a token is safe and does not constitute a comprehensive audit. The interface should show, item by item, what has been verified and where evidence is missing.
 
 ```mermaid
 flowchart LR
-  A[任务与预算] --> B[比较服务与选择方案]
-  B --> C[预留费用]
-  C --> D[执行采购]
-  D --> E[核对证据]
-  E -->|通过| F[交付报告并记录表现]
-  E -->|失败且预算允许| G[调用备用服务]
+  A[Task and budget] --> B[Compare services and select a plan]
+  B --> C[Reserve funds]
+  C --> D[Execute procurement]
+  D --> E[Check evidence]
+  E -->|Passed| F[Deliver report and record performance]
+  E -->|Failed and within budget| G[Call fallback service]
   G --> E
-  E -->|无法完成| H[显示原因与已发生费用]
+  E -->|Cannot complete| H[Show reason and costs already incurred]
 ```
 
-备用调用次数有明确上限；首版最多一次，不能形成无限重试。
+Fallback calls have an explicit limit: at most one in the first version, with no unlimited retry loop.
 
-## 一次采购如何运作
+## How a procurement works
 
-以下是当前引擎在初始种子历史下的实际演示行为，不是市场报价。全部金额为整数分记账，界面以 USDT 单位展示；没有实际支付或网络费用。未来真实接入时需要另外核实全部费用。
+The following describes the current engine's demo behavior with the initial seed history, not market prices. All amounts are recorded as integer cents and displayed in USDT; there are no actual payments or network fees. All applicable fees would need to be verified separately for a future live integration.
 
-用户给出 **0.50 USDT 采购预算、45 秒交付时限**，选择 Balanced：
+The user sets a **0.50 USDT procurement budget and a 45-second delivery deadline**, then chooses Balanced:
 
-1. AgentCo 比较三家能力符合要求的服务，综合价格、已观测表现、样本量和时限选择方案。
-2. Sentinel 主服务花费 0.20，Lens 验证花费 0.02；Atlas 备用服务为 0.14，备用结果再次验证为 0.02。
-3. 最坏路径需要 0.38，因此执行前预留 0.38，未占用预算为 0.12。
-4. 主服务与验证顺利完成，实际支出为 0.22。
-5. 释放未使用的 0.16 预留，最终还有 0.28 预算未花。释放预算预留不等于发生链上退款。
-6. 报告说明为何选中该服务、哪些证据通过验证、用了多少钱，并记录本次表现。
+1. AgentCo compares three services with the required capabilities and selects a plan using price, observed performance, sample size, and the deadline.
+2. The primary Sentinel service costs 0.20 and Lens verification costs 0.02. The Atlas fallback costs 0.14, with another 0.02 to verify its result.
+3. The worst permitted path costs 0.38, so 0.38 is reserved before execution, leaving 0.12 unallocated.
+4. The primary service and verification succeed, with spending of 0.22.
+5. The unused 0.16 reservation is released, leaving 0.28 of the budget unspent. Releasing a budget reservation is not an onchain refund.
+6. The report explains why the service was selected, which evidence passed verification, and how much was spent, while recording the run's performance.
 
-预算必须按最坏允许路径约束。预计成本可以用于比较方案，不能代替支出上限检查。
+The budget must constrain the worst permitted path. Expected cost can help compare plans, but it cannot replace checking the spending ceiling.
 
-验证不一致时，主服务被拒收，最多购买一次备用分析并再次验证，总模拟支出为 0.38。`Response timeout` 则演示“付款记账后丢失响应”：先核对并恢复同一次调用，复用原记录，避免第二次付费。没有可用备用方案时显示失败原因和已发生的模拟费用。
+If verification finds a disagreement, the primary result is rejected. At most one fallback analysis is purchased and verified again, bringing total simulated spending to 0.38. `Response timeout` instead demonstrates a response lost after payment was recorded: the system reconciles and recovers the same invocation, reusing the original record to avoid a second payment. If no fallback is available, it shows the failure reason and simulated costs already incurred.
 
-## 三种策略
+## Three policies
 
-| 策略 | 用户含义 | 当前演示选择方式 |
+| Policy | User priority | Current demo selection approach |
 | --- | --- | --- |
-| Lowest cost | 优先节省费用 | 在满足最低能力和交付要求的服务中控制成本；显示较少的验证覆盖 |
-| Balanced | 兼顾费用与证据 | 主服务加独立验证，预算足够时预留备用方案 |
-| High assurance | 更重视证据一致性 | 尽可能购买多个来源的意见并交叉验证；费用不足时明确提示无法执行 |
+| Lowest cost | Minimize spending | Control cost among services that meet minimum capability and delivery requirements; show the reduced verification coverage |
+| Balanced | Balance cost and evidence | Combine a primary service with independent verification, reserving a fallback when the budget permits |
+| High assurance | Prioritize agreement between sources | Purchase multiple opinions and cross-check them where possible; explicitly show when the budget cannot support execution |
 
-在初始历史、0.50 USDT、45 秒条件下，Lowest cost 使用 Scout，支出 0.06；Balanced 使用 Sentinel + Lens，成功 0.22、备用路径 0.38；High assurance 使用 Sentinel + Atlas + Lens，成功 0.36、备用路径 0.44。降低预算或缩短时限会改变服务组合和备用范围；本地历史积累也会改变后续选择。预计时限包含允许的备用路径和 2 秒对账余量。
+With the initial history, a 0.50 USDT budget, and a 45-second deadline, Lowest cost uses Scout and spends 0.06. Balanced uses Sentinel + Lens, spending 0.22 on success or 0.38 on the fallback path. High assurance uses Sentinel + Atlas + Lens, spending 0.36 on success or 0.44 on the fallback path. Lower budgets or shorter deadlines change the service combination and fallback scope; accumulating local history also affects future choices. The estimated time ceiling includes the permitted fallback path and a 2-second reconciliation allowance.
 
-提高策略等级不保证结果正确。它代表更高的验证覆盖和更严格的执行条件。
+A higher policy level does not guarantee a correct result. It means broader verification coverage and stricter execution conditions.
 
-选择依据应由可解释的程序规则计算。语言模型可用于理解输入和组织报告；金额、预算、候选过滤和执行权限由明确逻辑控制。
+Selection should be calculated using explainable program rules. A language model may help interpret input and organize reports; amounts, budgets, candidate filtering, and execution permissions are controlled by explicit logic.
 
-## AgentCo 与 OKX 的分工（未来集成方案）
+## Responsibilities of AgentCo and OKX (future integration plan)
 
-本节保留初始架构设想。下列 OKX、A2MCP、x402、Agentic Wallet 能力均未接入当前 demo，也不会在演示过程中触发。
+This section preserves the initial architecture proposal. None of the OKX, A2MCP, x402, or Agentic Wallet capabilities below are integrated into the current demo, and none are triggered during a demonstration.
 
-| 部分 | 作用 |
+| Component | Responsibility |
 | --- | --- |
-| AgentCo | 服务筛选、预算规划、策略解释、验收、备用流程、实际表现记录和界面 |
-| OKX AI | 未来真实服务市场与服务身份；届时需要核实服务目录 |
-| A2MCP / x402 | 标准化服务的按次调用与付费流程 |
-| Agentic Wallet | 真实调用时的支付签署与钱包能力 |
-| 独立数据源 | 为报告中的具体事实提供可比较的证据 |
+| AgentCo | Service filtering, budget planning, policy explanations, acceptance checks, fallback flows, measured performance records, and the interface |
+| OKX AI | A future live service marketplace and service identities; the service directory would need verification at that stage |
+| A2MCP / x402 | Standardized per-call service invocation and payment flows |
+| Agentic Wallet | Payment signing and wallet capabilities for live calls |
+| Independent data sources | Comparable evidence for specific facts in a report |
 
-[A2MCP 文档](https://web3.okx.com/onchainos/dev-docs/okxai/howtomcp)描述了免费接口和 x402 按次付费接口；[Agentic Wallet 文档](https://web3.okx.com/onchainos/dev-docs/home/agentic-wallet-overview)描述了 x402 支付支持。具体接口、币种、网络和费用必须在接入时核实。
+The [A2MCP documentation](https://web3.okx.com/onchainos/dev-docs/okxai/howtomcp) describes free endpoints and x402 pay-per-call endpoints. The [Agentic Wallet documentation](https://web3.okx.com/onchainos/dev-docs/home/agentic-wallet-overview) describes x402 payment support. Specific endpoints, currencies, networks, and fees must be verified when integration is undertaken.
 
-未来可以把 AgentCo 本身包装成对外收费的 A2A 服务，向客户交付报告，再购买下游服务完成任务。按[当前 A2A 流程](https://web3.okx.com/onchainos/dev-docs/okxai/a2a-no-subscription)，客户资金先托管、交付验收后结算。因此可推导出：下游采购需要 AgentCo 自有周转资金，不能把未释放的客户托管款当作可花余额。客户报价、采购预算、钱包余额和利润应分别记账。
+In the future, AgentCo itself could be packaged as a paid A2A service that delivers reports to customers while purchasing downstream services to complete their tasks. Under the [current A2A flow](https://web3.okx.com/onchainos/dev-docs/okxai/a2a-no-subscription), customer funds are escrowed first and settled after delivery is accepted. This implies that downstream procurement needs AgentCo's own working capital; unreleased customer escrow cannot be treated as spendable funds. Customer pricing, procurement budgets, wallet balances, and profit should be accounted for separately.
 
-该 A2A 扩展放在采购闭环完成之后。不要把已有的 OKX AI 任务托管流程与[仍标注开发中的通用 Escrow Payment 接口](https://web3.okx.com/onchainos/dev-docs/payments/core-concept)混为一谈。
+This A2A extension comes after the procurement flow is complete. The existing OKX AI task escrow flow should not be confused with the [general Escrow Payment interface still marked as under development](https://web3.okx.com/onchainos/dev-docs/payments/core-concept).
 
-## 对分享方案的核对与修正（初始资料记录）
+## Checks and corrections to the shared proposal (initial research record)
 
-- [PULSE / Agent 8355](https://okx.ai/agents/8355)：本次浏览器访问显示页面不存在。不能继续把原文的服务价格、评价和可用性作为当前事实；也不能据此断定其在所有地区永久下架。
-- [Onchain Data Explorer / Agent 2023](https://okx.ai/agents/2023)：本次可访问，页面显示免费链目录及多个 0.01 USDT/次的数据服务。具体风险验证端点、链支持、响应字段和独立性仍需实测；浏览到页面不等于集成已成功。
-- 分享中的其他候选服务尚未逐一核实。服务目录保存核对时间、能力、真实服务 ID 和来源。
-- 市场评分和销量只能提供参考。AgentCo 的任务通过率、耗时和失败记录来自自己的调用观测，并显示样本量。不能把销量当成功任务数，也不能把模拟历史冒充真实表现。
-- 如两个服务依赖同一个底层数据源，应展示其相关性，不能宣称是两个完全独立的证据。
+- [PULSE / Agent 8355](https://okx.ai/agents/8355): the browser visit during this research returned a page-not-found result. The original service prices, reviews, and availability cannot be treated as current facts; this observation also does not establish that the service has been permanently removed in every region.
+- [Onchain Data Explorer / Agent 2023](https://okx.ai/agents/2023): it was accessible during this research, and its page showed a free chain directory and several data services priced at 0.01 USDT per call. Specific risk verification endpoints, chain support, response fields, and data independence still require testing; viewing the page does not mean integration has succeeded.
+- The other candidate services in the shared discussion have not all been verified individually. The service directory should retain the verification time, capabilities, real service ID, and source.
+- Market ratings and sales counts are reference signals only. AgentCo's task acceptance rates, latency, and failure records come from its own call observations, with sample sizes displayed. Sales counts must not be treated as successful task counts, and simulated history must not be presented as real performance.
+- If two services depend on the same underlying data source, that relationship should be shown; they must not be described as two fully independent pieces of evidence.
 
-## 本次 demo 的交付范围与未来工作
+## This demo's delivery scope and future work
 
-本次交付是视觉和交互完整的本地演示：任务输入、三种策略、服务比较、预算变化、运行进度、证据报告、可解释失败、超时对账和重置回放。底层使用确定性的演示数据与状态推进；界面、事件和导出文件标识模拟来源。
+This delivery is a complete local visual and interactive demo: task input, three policies, service comparison, budget changes, execution progress, evidence reports, explainable failures, timeout reconciliation, and reset/replay. It uses deterministic demo data and state progression; the interface, events, and exported files identify their simulated origins.
 
-未来若开展真实集成，再另行核实 OKX AI 服务、预算口径和钱包环境，建立真实调用与支付证据。当前任务没有授权或要求这一步。真实、录制和模拟三种来源届时应分别标识；当前只实现模拟来源。
+If live integration is pursued in the future, OKX AI services, the scope of the budget, and the wallet environment should be verified separately, with real invocation and payment evidence established. The current task neither authorizes nor requires that step. Live, recorded, and simulated sources should then be labeled separately; only simulated sources are implemented now.
 
-当前目录固定为三家虚构分析服务和一个虚构验证服务。通用任务拆解、全市场搜索、自建支付托管和复杂多租户后台留到后续。
+The current directory is fixed at three fictional analysis services and one fictional verification service. General task decomposition, marketplace-wide search, custom payment escrow, and a complex multitenant backend are deferred.
 
-实际可用的供应商、端点与链支持，以及团队参赛状态，属于未来集成或参赛准备的待确认事项，不影响本次纯模拟 demo 的交付。
+Available real providers, endpoints and chain support, and the team's participation status remain items to confirm for future integration or hackathon preparation. They do not affect delivery of this fully simulated demo.
 
-## 演示需要证明什么
+## What the demo needs to demonstrate
 
-- 用户看得懂 AgentCo 为什么选择这家服务。
-- 同一任务切换采购策略后，计划和费用能发生可解释的变化。
-- 支出加剩余预留始终不超过上限，预算不足时不执行付费调用。
-- 验证不通过时明确展示失败，备用调用必须符合预算和次数限制。
-- 支付状态不明时先核对原调用，避免重复付款。
-- 最终报告可以追溯到服务、结果来源、费用与验收记录。
+- Users can understand why AgentCo selected a service.
+- Switching procurement policies for the same task changes the plan and costs in explainable ways.
+- Spending plus the remaining reservation never exceeds the limit; an insufficient budget prevents paid calls.
+- Failed verification is shown clearly, and fallback calls must respect both the budget and the attempt limit.
+- An uncertain payment state triggers reconciliation of the original invocation before any repeat payment.
+- The final report can be traced back to the services, result sources, costs, and acceptance records.
 
-参考产品输入：[用户分享的 AgentCo MVP 讨论](https://chatgpt.com/share/6aae7f96-13bc-83ec-b2a3-2a317c76cae7)。其建议已按本次资料核对与视觉演示目标收敛，并未视为平台能力保证。
+Product input: [the AgentCo MVP discussion shared by the user](https://chatgpt.com/share/6aae7f96-13bc-83ec-b2a3-2a317c76cae7). Its suggestions have been narrowed using the research and visual demo goals for this iteration; they have not been treated as guarantees of platform capability.

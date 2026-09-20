@@ -1,67 +1,69 @@
-# AgentCo：约三分钟演示脚本
+# AgentCo: a three-minute demo walkthrough
 
-这份脚本演示已经实现的本地产品。所有服务、行情、评分、费用与支付记录均为合成数据，没有钱包连接、收费 API 或真实转账。
+**English** | [简体中文](demo-walkthrough.zh-CN.md)
 
-## 演示前
+This script demonstrates the local product as implemented. All services, market data, ratings, costs, and payment records are synthetic. There is no wallet connection, paid API call, or real transfer.
 
-运行 `npm install`、`npm run dev`，打开 [localhost:5173](http://localhost:5173)。使用新的浏览器配置或隐私窗口开始，以便从初始种子历史出发。普通刷新、`New task` 和 `Reset run` 都会保留当前浏览器的运行历史；最近 30 条模拟验收记录会影响后续供应商选择。
+## Before the demo
 
-默认任务是 Base 上的 AERO 示例地址，`Spend limit` 为 **0.50 USDT**，`Delivery window` 为 **45 sec**。真实地址只是任务标识，输入后不会查询真实行情。下列固定费用均以该预算、时限和初始历史为前提。
+Run `npm install` and `npm run dev`, then open [localhost:5173](http://localhost:5173). Start with a fresh browser profile or private window to use the initial seeded history. Refreshing the page, choosing `New task`, or using `Reset run` preserves the current browser's run history. Observations from the most recent 30 simulated runs influence future provider selection.
 
-| 界面策略 | 正常结果 | 含一次备用的最高支出 |
+The default task uses the example AERO address on Base, with a `Spend limit` of **0.50 USDT** and a `Delivery window` of **45 sec**. The real address serves only as a task identifier; entering it does not query live market data. The fixed costs below assume this budget, deadline, and initial history.
+
+| Policy in the UI | Normal outcome | Maximum spend with one fallback |
 | --- | ---: | ---: |
-| Lowest cost | 0.06 | 0.06，无备用 |
+| Lowest cost | 0.06 | 0.06; no fallback |
 | Balanced | 0.22 | 0.38 |
 | High assurance | 0.36 | 0.44 |
 
-## 0:00–0:25 · 一句话讲清产品
+## 0:00–0:25 · Explain the product
 
-停留在 `Workspace`。
+Stay in `Workspace`.
 
-> “AgentCo 是一个替用户采购 AI 服务的工作台。我给它任务、预算和质量要求，它负责选服务、控制花费、检查结果，并留下每个决策的记录。右上角的 Demo environment 表示这次全部运行在模拟环境，不会动用真实资金。”
+> “AgentCo is a workspace that procures AI services on your behalf. I give it a task, a budget, and quality requirements. It selects services, controls spending, checks results, and records every decision. The Demo environment indicator at the top right means this run is entirely simulated, with no real funds involved.”
 
-指向 `Token contract`、`Network`、`Spend limit` 和三张策略卡，说明同一个任务可以有不同采购方式。
+Point to `Token contract`, `Network`, `Spend limit`, and the three policy cards. Explain that the same task can use different procurement approaches.
 
-## 0:25–0:50 · 比较策略与选择原因
+## 0:25–0:50 · Compare policies and selection reasons
 
-点击 `Compare policies`，展示三个方案。
+Click `Compare policies` to show the three plans.
 
-> “Lowest cost 用 Scout，费用 0.06，只检查返回内容的结构和身份。Balanced 用 Sentinel 加 Lens 验证，正常费用 0.22，并为 Atlas 备用和再次验证预留空间。High assurance 买两份分析，再进行核对，正常费用 0.36，最高 0.44。预算和时限不足时，计划会调整或被阻止。”
+> “Lowest cost uses Scout for 0.06 and checks only the response structure and identity. Balanced uses Sentinel plus Lens verification for a normal cost of 0.22, with room reserved for Atlas as a fallback and another verification call. High assurance buys two analyses and cross-checks them, with a normal cost of 0.36 and a ceiling of 0.44. If the budget or deadline is too tight, the plan adjusts or is blocked.”
 
-关闭对话框，保持 `Balanced`。指向服务表格中的 `DEMO HISTORY`：这些是带样本量的模拟验收历史，和市场星级是不同信号。
+Close the dialog and keep `Balanced` selected. Point to `DEMO HISTORY` in the service table: these are simulated acceptance records with sample counts, a separate signal from marketplace star ratings.
 
-## 0:50–1:30 · 跑通采购、预算与证据
+## 0:50–1:30 · Run procurement, budget tracking, and verification
 
-在 `Explore an outcome` 保持 `Successful delivery`，点击 `Run procurement`。自动演示每 1.25 秒推进一步；需要停下来讲解时使用 `Pause execution` 或右侧单步按钮，也可事先勾选 `Start in step-by-step mode`。
+Under `Explore an outcome`, keep `Successful delivery` selected and click `Run procurement`. Automatic playback advances one event every 1.25 seconds. Use `Pause execution` or the step button to its right when explaining an event, or select `Start in step-by-step mode` before starting.
 
-> “AgentCo 先按最坏允许路径预留 0.38，其中包括主服务、验证、备用及再次验证。主流程成功只花 0.22，剩下的 0.16 预留被释放，预算最终还有 0.28。这是账本预留的释放，不是链上退款。”
+> “AgentCo first reserves 0.38 for the most expensive allowed path, including the primary service, verification, fallback, and repeat verification. A successful primary path spends only 0.22, releasing the remaining 0.16 reservation and leaving 0.28 of the budget unspent. This releases a ledger reservation; it is not an onchain refund.”
 
-跟随预算分配带和 `Execution journal`，结束后点击 `View risk snapshot`。指出 `Matched` 与 `Not verified`：流动性等字段与模拟参考值匹配，但 `Contract security audit` 未验证。点击 `Export evidence` 可下载包含任务、计划、逐步账本和证据的 JSON。
+Follow the budget allocation bar and `Execution journal`, then click `View risk snapshot` when the run finishes. Point out `Matched` and `Not verified`: fields such as liquidity match the synthetic reference, but `Contract security audit` has not been verified. Click `Export evidence` to download JSON containing the task, plan, ledger at each step, and evidence.
 
-## 1:30–2:10 · 让失败可解释
+## 1:30–2:10 · Make a failure understandable
 
-关闭报告，在 `Explore an outcome` 选择 `Verification mismatch`，保持 Balanced 和 0.50 预算，再点击 `Run procurement`。
+Close the report, choose `Verification mismatch` under `Explore an outcome`, keep Balanced and the 0.50 budget, and click `Run procurement` again.
 
-> “付费拿到结果并不等于验收通过。这里流动性与参考值不一致，AgentCo 拒收第一份分析，使用已预留的 Atlas 备用，并再次调用 Lens。备用最多一次，全部完成支出 0.38，仍有 0.12 未花。”
+> “Paying for a response does not mean the result passes acceptance. Here, the liquidity figure disagrees with the reference. AgentCo rejects the first analysis, activates the reserved Atlas fallback, and calls Lens again. It permits at most one fallback. The completed run spends 0.38 and leaves 0.12 unspent.”
 
-展示 `Evidence disagreement detected`、`Fallback 1 of 1 · Atlas` 与最后通过的证据。可点击任意事件查看当时的累计支出、剩余预留和可用预算。
+Show `Evidence disagreement detected`, `Fallback 1 of 1 · Atlas`, and the evidence that ultimately passes. Click any event to inspect cumulative spending, remaining reservations, and available budget at that point.
 
-## 2:10–2:40 · 超时不会自动重复付款
+## 2:10–2:40 · Recover a timeout without paying twice
 
-选择 `Response timeout` 并运行。
+Select `Response timeout` and run it.
 
-> “这个情景模拟记账成功后响应丢失。系统先保留原调用记录，再通过 Original invocation reconciled 恢复同一次调用的结果；不会因为没收到响应就再付一次钱。Balanced 的正常总费用仍为 0.22。”
+> “This scenario simulates losing the response after the payment has been recorded. The system keeps the original invocation record, then recovers that same call through Original invocation reconciled. A missing response does not trigger a second payment. Balanced's normal total remains 0.22.”
 
-如果时间紧张，可用单步按钮快速推进到该事件。
+If time is short, use the step button to advance to this event.
 
-## 2:40–3:10 · 留下可追溯记录
+## 2:40–3:10 · Leave a traceable record
 
-打开 `Run history`，查看三次情景的结果和支出，再切到 `Treasury` 展示费用与预算的对照。必要时打开 `Agent directory` 查看服务资料和任务验收样本。
+Open `Run history` to review the outcomes and costs of the three scenarios. Switch to `Treasury` to compare spending with budgets. If useful, open `Agent directory` to inspect provider profiles and acceptance samples.
 
-> “每次结果都进入本地模拟历史，并影响后续选择。用户可以追溯为什么选这家服务、花了多少、哪些证据通过、哪些没有覆盖。这次交付展示完整采购体验；真实 OKX 服务与支付接入留待后续单独开展。”
+> “Every outcome enters local simulated history and informs future selection. Users can trace why a service was chosen, how much was spent, which evidence passed, and what was left unchecked. This demo shows the complete procurement experience; real OKX service and payment integration will be separate future work.”
 
-## 可选加演：预算不足
+## Optional extension: insufficient budget
 
-回到 `Workspace`，选择 `High assurance`，把 `Spend limit` 改为 **0.21**。此时预算不足以支付两份分析和验证，显示 `Before you run`，`Run procurement` 不可执行。恢复 0.50 后可继续。
+Return to `Workspace`, choose `High assurance`, and change `Spend limit` to **0.21**. This is insufficient for two analyses and verification. The UI displays `Before you run`, and `Run procurement` is disabled. Restore 0.50 to continue.
 
-演示多次以后，历史反馈可能改变服务组合和报价；这是设计中的行为。若需要严格重复表格中的初始价格，重新使用一个没有历史的新浏览器会话。
+After repeated demos, history feedback may change the service combination and its quoted cost. This is intentional. To reproduce the initial costs in the table exactly, use a fresh browser session with no saved history.

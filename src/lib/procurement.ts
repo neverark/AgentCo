@@ -76,6 +76,7 @@ export interface ProviderObservation {
 
 export interface Run {
   id: string;
+  source?: 'sample' | 'live';
   task: Task;
   plan: Plan;
   createdAt: string;
@@ -83,6 +84,20 @@ export interface Run {
   finalStatus: 'completed' | 'failed' | 'blocked';
   totalCents: number;
   observations: ProviderObservation[];
+  providerResult?: unknown;
+  marketSnapshot?: unknown;
+  paymentReceipt?: {
+    paymentId: string;
+    status: 'success' | 'pending' | 'failed' | 'unknown';
+    transaction?: string;
+    network: string;
+    asset: string;
+    payTo: string;
+    tokenSymbol: string;
+    amountHuman: number;
+    amountCents: number;
+    payer?: string;
+  };
 }
 
 export const SIMULATION_TIMESTAMP = '2026-09-20T09:41:00.000Z';
@@ -349,7 +364,7 @@ export function buildRun(task: Task, plan: Plan, runId: string, providerProfiles
   function finish(): Run {
     frames.forEach((item, index) => { item.progress = frames.length === 1 ? 100 : Math.round(index / (frames.length - 1) * 100); });
     return {
-      id: runId, task: runTask, plan: selectedPlan, createdAt: SIMULATION_TIMESTAMP,
+      id: runId, source: 'sample', task: runTask, plan: selectedPlan, createdAt: SIMULATION_TIMESTAMP,
       frames, finalStatus, totalCents: spentCents, observations,
     };
   }

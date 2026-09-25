@@ -1,15 +1,28 @@
 import { createOnchainTokenHandler } from '../../api/_onchain-token.js';
+import { createOnchainMarketHandler } from '../../api/_onchain-market.js';
+import { createSnifferRiskHandlers } from '../../api/_sniffer-risk.js';
 import { createWalletStatusHandler } from './okx-wallet-status.js';
 
 const TOKEN_PATH = '/api/onchainos/token-basic-info';
+const MARKET_PATH = '/api/onchainos/token-market-info';
 const WALLET_PATH = '/api/okx/wallet-status';
+const SNIFFER_QUOTE_PATH = '/api/okx/sniffer-risk/quote';
+const SNIFFER_PAY_PATH = '/api/okx/sniffer-risk/pay';
+const SNIFFER_STATUS_PATH = '/api/okx/sniffer-risk/payment-status';
 
 export function okxIntegrationPlugin(env) {
   const tokenHandler = createOnchainTokenHandler({ env });
+  const marketHandler = createOnchainMarketHandler({ env });
   const walletHandler = createWalletStatusHandler();
+  const sniffer = createSnifferRiskHandlers({ env });
   const middleware = async (request, response, next) => {
     const path = new URL(request.url || '/', 'http://localhost').pathname;
-    const handler = path === TOKEN_PATH ? tokenHandler : path === WALLET_PATH ? walletHandler : null;
+    const handler = path === TOKEN_PATH ? tokenHandler
+      : path === MARKET_PATH ? marketHandler
+        : path === WALLET_PATH ? walletHandler
+          : path === SNIFFER_QUOTE_PATH ? sniffer.quote
+            : path === SNIFFER_PAY_PATH ? sniffer.pay
+              : path === SNIFFER_STATUS_PATH ? sniffer.status : null;
     if (!handler) return next();
     try {
       const method = request.method || 'GET';

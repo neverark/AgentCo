@@ -133,7 +133,7 @@ export function summarizeForAgentLedger(runs: Run[], now = Date.now()): AgentLed
   const start = now - 30 * 24 * 60 * 60 * 1000;
   const seenRunIds = new Set<string>();
   const eligible = runs.filter((run) => {
-    if (!run || typeof run.id !== 'string' || seenRunIds.has(run.id)) return false;
+    if (!run || run.source === 'live' || typeof run.id !== 'string' || seenRunIds.has(run.id)) return false;
     seenRunIds.add(run.id);
     const createdAt = Date.parse(run.createdAt);
     return Number.isFinite(createdAt) && createdAt >= start && createdAt <= now

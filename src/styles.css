@@ -334,6 +334,46 @@ h1 { font-size: clamp(29px, 2.55vw, 40px); font-weight: 650; letter-spacing: -1.
 .chart-legend { display: inline-flex; gap: 5px; align-items: center; margin-right: auto; }
 .chart-legend i { width: 7px; height: 7px; background: #829bfb; border-radius: 2px; }
 .okx-connection-panel { margin-top: 0; }
+.live-procurement-panel { margin-top: 0; }
+.live-procurement-content { display: grid; justify-items: start; gap: 14px; padding: 0 24px 22px; }
+.live-procurement-content > p { color: #68768b; font-size: 12px; line-height: 1.75; }
+.live-procurement-content > p a { display: inline-flex; align-items: center; gap: 3px; color: #5269bd; }
+.live-service-metadata { display: flex; flex-wrap: wrap; gap: 8px; }
+.live-service-metadata > span { padding: 8px 10px; background: #f6f8fb; border: 1px solid #e9edf4; border-radius: 5px; color: #68768b; font-size: 10px; }
+.live-service-metadata strong { color: #8796aa; font-weight: 500; margin-right: 4px; }
+.live-quote-card { display: grid; gap: 17px; width: 100%; padding: 17px; border: 1px solid #dfe6f1; background: #fbfcfe; border-radius: 8px; }
+.live-quote-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.live-quote-heading > div { display: grid; gap: 6px; }
+.live-quote-heading > div > strong { font-size: 13px; font-weight: 550; }
+.live-quote-details { display: grid; gap: 12px; }
+.live-quote-details > div { display: grid; gap: 5px; }
+.live-quote-details span, .live-quote-details small { color: #8290a5; font-size: 10px; }
+.live-quote-details strong { color: #42526c; font-size: 11px; font-weight: 500; overflow-wrap: anywhere; }
+.live-options { display: grid; gap: 8px; }
+.live-option { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid #e7ebf2; border-radius: 6px; background: white; cursor: pointer; }
+.live-option.selected { border-color: #91a8f6; background: #f7f9ff; }
+.live-option > input { margin-top: 3px; accent-color: #637fdf; }
+.live-option > span:nth-child(2) { display: grid; gap: 5px; flex: 1; min-width: 0; }
+.live-option strong { font-size: 12px; font-weight: 600; color: #42526c; }
+.live-option small { font-size: 10px; line-height: 1.5; color: #8290a5; overflow-wrap: anywhere; }
+.live-market-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.live-market-grid > div { display: grid; gap: 5px; min-width: 0; padding: 12px; border: 1px solid #e9edf4; background: white; border-radius: 6px; }
+.live-market-grid span { font-size: 10px; color: #8795aa; }
+.live-market-grid strong { font: 14px 'IBM Plex Mono', monospace; color: #34445d; overflow-wrap: anywhere; }
+.live-market-grid small { font-size: 9px; line-height: 1.5; color: #8290a5; overflow-wrap: anywhere; }
+.live-payment-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 13px; }
+.live-payment-actions > .text-button { color: #9a7150; }
+.live-procurement-error { font-size: 11px; color: #a4443e; line-height: 1.6; }
+.live-procurement-footnote { max-width: 800px; color: #8592a5; font-size: 10px; line-height: 1.65; }
+.live-report-market, .live-provider-result, .live-payment-receipt { margin: 22px 0; }
+.live-report-market .section-heading, .live-provider-result .section-heading, .live-payment-receipt .section-heading { margin-bottom: 12px; }
+.live-data-timestamp { display: block; margin-top: 9px; color: #8290a5; font-size: 10px; }
+.live-provider-result pre { max-height: 360px; overflow: auto; padding: 15px; background: #f7f9fc; border: 1px solid #e7ebf2; border-radius: 6px; color: #465875; font: 11px/1.65 'IBM Plex Mono', monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.live-payment-receipt dl { display: grid; gap: 9px; margin: 0; }
+.live-payment-receipt dl > div { display: grid; grid-template-columns: 125px minmax(0, 1fr); gap: 12px; }
+.live-payment-receipt dt { font-size: 11px; color: #8290a5; }
+.live-payment-receipt dd { min-width: 0; margin: 0; font-size: 11px; color: #465875; overflow-wrap: anywhere; }
+.live-payment-receipt code { font: 10px 'IBM Plex Mono', monospace; }
 .treasury-view > .okx-connection-panel { margin-top: 24px; }
 .okx-connection-content { display: grid; justify-items: start; gap: 12px; padding: 0 24px 22px; }
 .okx-connection-content > p { color: #68768b; font-size: 12px; line-height: 1.7; }
@@ -688,6 +728,11 @@ h1 { font-size: clamp(29px, 2.55vw, 40px); font-weight: 650; letter-spacing: -1.
   .panel-footnote { padding: 14px 16px; flex-wrap: wrap; line-height: 1.6; }
   .agentledger-content { padding-left: 15px; padding-right: 15px; }
   .okx-connection-content { padding-left: 15px; padding-right: 15px; }
+  .live-procurement-content { padding-left: 15px; padding-right: 15px; }
+  .live-market-grid { grid-template-columns: 1fr 1fr; }
+  .live-market-grid > div:last-child { grid-column: 1 / -1; }
+  .live-quote-card { padding: 13px; }
+  .live-payment-receipt dl > div { grid-template-columns: 90px minmax(0, 1fr); gap: 8px; }
   .agentledger-footnote { margin: 18px -15px -18px; padding-left: 15px; padding-right: 15px; }
   .agentledger-result-heading { align-items: flex-start; flex-direction: column; }
   .agentledger-metrics { grid-template-columns: 1fr 1fr; }

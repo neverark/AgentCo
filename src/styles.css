@@ -333,6 +333,17 @@ h1 { font-size: clamp(29px, 2.55vw, 40px); font-weight: 650; letter-spacing: -1.
 .spend-row > svg { color: #68768b; }
 .chart-legend { display: inline-flex; gap: 5px; align-items: center; margin-right: auto; }
 .chart-legend i { width: 7px; height: 7px; background: #829bfb; border-radius: 2px; }
+.okx-connection-panel { margin-top: 0; }
+.treasury-view > .okx-connection-panel { margin-top: 24px; }
+.okx-connection-content { display: grid; justify-items: start; gap: 12px; padding: 0 24px 22px; }
+.okx-connection-content > p { color: #68768b; font-size: 12px; line-height: 1.7; }
+.okx-connection-content > small { color: #7c899d; font-size: 11px; }
+.okx-connection-content > .agentledger-error { color: #a4443e; }
+.okx-connection-result { display: grid; gap: 4px; width: 100%; padding: 13px 14px; border: 1px solid #e5ebf4; border-radius: 7px; background: #fbfcfe; }
+.okx-connection-result strong { font-size: 13px; font-weight: 600; }
+.okx-connection-result span, .okx-connection-result small { color: #738198; font-size: 11px; line-height: 1.5; }
+.okx-connection-links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.okx-connection-links a { display: inline-flex; align-items: center; gap: 4px; color: #4565c9; font-size: 11px; }
 .agentledger-panel { margin-top: 24px; }
 .agentledger-content { padding: 0 24px 20px; }
 .agentledger-lead { color: #68768b; font-size: 12px; line-height: 1.7; }
@@ -676,6 +687,7 @@ h1 { font-size: clamp(29px, 2.55vw, 40px); font-weight: 650; letter-spacing: -1.
   .spend-chart { padding: 10px 16px 20px; }
   .panel-footnote { padding: 14px 16px; flex-wrap: wrap; line-height: 1.6; }
   .agentledger-content { padding-left: 15px; padding-right: 15px; }
+  .okx-connection-content { padding-left: 15px; padding-right: 15px; }
   .agentledger-footnote { margin: 18px -15px -18px; padding-left: 15px; padding-right: 15px; }
   .agentledger-result-heading { align-items: flex-start; flex-direction: column; }
   .agentledger-metrics { grid-template-columns: 1fr 1fr; }

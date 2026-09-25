@@ -12,6 +12,8 @@ import {
   DEFAULT_TASK, applyRunHistory, buildRun, formatMoney, getPlans, selectPlan,
 } from './lib/procurement';
 import type { Evidence, Policy, Provider, Run, RunFrame, Scenario, Task } from './lib/procurement';
+import { AGENTLEDGER, readAgentLedgerAssessment, summarizeForAgentLedger } from './lib/agentledger';
+import type { AgentLedgerAssessment } from './lib/agentledger';
 
 type View = 'workspace' | 'providers' | 'history' | 'treasury';
 type Overlay = { kind: 'guide' | 'compare' } | { kind: 'provider'; provider: Provider }
@@ -78,6 +80,84 @@ function exportRun(run: Run) {
   const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
   const link = document.createElement('a'); link.href = url; link.download = `agentco-${run.id}.json`; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function AgentLedgerPanel({ runs }: { runs: Run[] }) {
+  const summary = useMemo(() => summarizeForAgentLedger(runs), [runs]);
+  const [state, setState] = useState<{ kind: 'idle' | 'loading' } | { kind: 'success'; result: AgentLedgerAssessment } | { kind: 'error'; message: string }>({ kind: 'idle' });
+  const requestId = useRef(0);
+
+  useEffect(() => {
+    requestId.current += 1;
+    setState({ kind: 'idle' });
+  }, [summary]);
+
+  async function requestAssessment() {
+    const currentRequest = ++requestId.current;
+    setState({ kind: 'loading' });
+    try {
+      const response = await fetch(AGENTLEDGER.proxyPath, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(summary.payload),
+        signal: AbortSignal.timeout(25_000),
+      });
+      const text = await response.text();
+      if (!response.ok) throw new Error(`The listed service returned HTTP ${response.status}. No assessment was received.`);
+      let data: unknown;
+      try { data = JSON.parse(text); }
+      catch { throw new Error('AgentLedger returned a response that was not JSON. No assessment was displayed.'); }
+      if (currentRequest !== requestId.current) return;
+      setState({ kind: 'success', result: readAgentLedgerAssessment(data) });
+    } catch (error) {
+      if (currentRequest !== requestId.current) return;
+      setState({ kind: 'error', message: error instanceof Error ? error.message : 'The listed service could not be reached. No assessment was received.' });
+    }
+  }
+
+  const assessment = state.kind === 'success' ? state.result : null;
+  const money = (value?: number) => value === undefined ? '—' : `$${value.toFixed(2)}`;
+
+  return <section className="panel agentledger-panel">
+    <div className="panel-heading">
+      <div><p className="eyebrow muted">OKX.AI LISTED SERVICE</p><h2>AgentLedger Financial Health</h2></div>
+      <span className="pill green">Free · live service</span>
+    </div>
+    <div className="agentledger-content">
+      <p className="agentledger-lead">Get an external assessment of AgentCo’s recent synthetic budget use and service-provider concentration.</p>
+      <div className="agentledger-links">
+        <a href={AGENTLEDGER.listingUrl} target="_blank" rel="noreferrer">OKX.AI listing · Agent {AGENTLEDGER.agentId} · Service {AGENTLEDGER.serviceId} <ArrowUpRight size={14} /></a>
+        <span>Direct endpoint: <code>agentledger-one.vercel.app/api/company-health</code></span>
+      </div>
+      <div className="agentledger-inputs" aria-label="Data to be sent">
+        <div><span>Runs in 30 days</span><strong>{summary.runCount}</strong></div>
+        <div><span>Assigned budgets</span><strong>{summary.totalBudget.toFixed(2)} <small>demo units</small></strong></div>
+        <div><span>Simulated service calls</span><strong>{summary.totalTransactions}</strong></div>
+        <div><span>Simulated spend</span><strong>{summary.totalSpend.toFixed(2)} <small>demo units</small></strong></div>
+      </div>
+      {summary.totalTransactions === 0 && <p className="agentledger-hint">Complete a simulated procurement first to create aggregate data for the service.</p>}
+      <div className="agentledger-action">
+        <button className="button primary" onClick={requestAssessment} disabled={state.kind === 'loading' || summary.totalTransactions === 0}>
+          {state.kind === 'loading' ? 'Contacting AgentLedger…' : 'Run free external assessment'} <ArrowUpRight size={15} />
+        </button>
+        {state.kind === 'loading' && <span role="status">Waiting for the live service response.</span>}
+        {state.kind === 'error' && <span className="agentledger-error" role="alert">{state.message}</span>}
+      </div>
+
+      {assessment && <div className="agentledger-result" aria-live="polite">
+        <div className="agentledger-result-heading"><div><p className="eyebrow muted">LIVE RESPONSE</p><h3>{assessment.service || 'AgentLedger'} returned an assessment</h3></div><span className="pill blue">{assessment.stateVerification === 'caller_supplied' ? 'Caller supplied' : assessment.dataSource || 'External result'}</span></div>
+        <div className="agentledger-metrics">
+          <div><span>Budget used</span><strong>{assessment.budget?.usedPct === undefined ? '—' : `${assessment.budget.usedPct}%`}</strong><small>{money(assessment.budget?.used)} of {money(assessment.budget?.limit)} {assessment.currency || 'USD'}</small></div>
+          <div><span>Budget remaining</span><strong>{money(assessment.budget?.remaining)}</strong><small>{assessment.currency || 'USD'} · {assessment.budget?.periodDays ?? 30} days</small></div>
+          <div><span>Largest provider share</span><strong>{assessment.topCounterparties[0]?.shareOfSpendPct === undefined ? '—' : `${assessment.topCounterparties[0].shareOfSpendPct}%`}</strong><small>{assessment.topCounterparties[0]?.address || 'No provider breakdown'}</small></div>
+        </div>
+        {assessment.insights.length > 0 && <div className="agentledger-insights">{assessment.insights.map((insight, index) => <article key={`${insight.type}-${index}`}><span className={`pill ${insight.severity === 'positive' ? 'green' : 'amber'}`}>{insight.type === 'budget_utilization' ? 'Budget use' : 'Provider concentration'}</span><strong>{insight.title || insight.type}</strong>{insight.message && <p>{insight.message}</p>}</article>)}</div>}
+        <p className="agentledger-caveat">AgentLedger received caller-supplied synthetic aggregates; it did not verify them. AgentCo has no income records, so it sent zero inflows. Income, cash-flow, and overall health conclusions are outside this assessment. Demo values are passed numerically into the service’s USD schema; no exchange-rate lookup or conversion is performed.</p>
+        <div className="agentledger-result-foot"><span>{assessment.analysisVersion ? `Analysis ${assessment.analysisVersion}` : 'External service response'}{assessment.generatedAt ? ` · ${new Date(assessment.generatedAt).toLocaleString()}` : ''}</span><span>Only budget-use and provider-concentration findings are shown.</span></div>
+      </div>}
+      <div className="panel-footnote agentledger-footnote"><Info size={13} /> Free direct call to AgentLedger’s OKX.AI-listed endpoint; synthetic aggregates only.</div>
+    </div>
+  </section>;
 }
 
 function RunReport({ run }: { run: Run }) {
@@ -242,7 +322,7 @@ export default function App() {
 
         {view === 'history' && <section className="panel history-panel"><div className="panel-heading"><h2>Your procurement history <span className="count-badge">{runs.length}</span></h2><div className="filter-tabs">{['all', 'completed', 'failed', 'blocked'].map(filter => <button key={filter} className={historyFilter === filter ? 'active' : ''} aria-pressed={historyFilter === filter} onClick={() => setHistoryFilter(filter)}>{filter[0].toUpperCase() + filter.slice(1)}</button>)}</div></div>{!visibleRuns.length ? <div className="empty-state"><History size={32} /><h2>{runs.length ? 'No runs in this category.' : 'Your first decision is waiting.'}</h2><p>{runs.length ? 'Choose another filter to explore your history.' : 'Complete a procurement to see its decisions, costs, and evidence here.'}</p><button className="button primary" onClick={() => navigate('workspace')}>Open workspace <ArrowRight size={16} /></button></div> : <div className="history-table"><div className="history-row table-head"><span>PROCUREMENT</span><span>POLICY</span><span>OUTCOME</span><span>SPEND</span><span /></div>{visibleRuns.map(item => <button className="history-row" key={item.id} onClick={() => setOverlay({ kind: 'report', run: item })}><span><strong>{item.task.tokenSymbol} risk snapshot</strong><small>{new Date(item.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })} · {SCENARIOS[item.task.scenario]}</small></span><span>{POLICY_INFO[item.task.policy].label}</span><span className={`pill ${item.finalStatus === 'completed' ? 'green' : 'amber'}`}>{item.finalStatus}</span><span><Money cents={item.totalCents} unit /></span><ChevronRight size={16} /></button>)}</div>}<div className="panel-footnote"><Info size={13} /> Demo history is stored in this browser. Up to 30 runs are retained.</div></section>}
 
-        {view === 'treasury' && <div className="treasury-view"><div className="treasury-overview"><section className="panel treasury-summary primary-summary"><Wallet size={24} /><span>Total simulated spend</span><strong><Money cents={totalSpent} /><small>USDT</small></strong><p>Across {runs.length} recorded procurements</p></section><section className="panel treasury-summary"><FileCheck2 size={24} /><span>Delivered snapshots</span><strong>{completedCount}<small>/ {runs.length} runs</small></strong><p>Accepted after the selected checks</p></section><section className="panel treasury-summary"><ShieldCheck size={24} /><span>Budget overruns</span><strong>{runs.filter(item => item.totalCents > item.task.budgetCents).length}</strong><p>Spending ceilings enforced by the planner</p></section></div><section className="panel"><div className="panel-heading"><div><p className="eyebrow muted">SPEND VERSUS LIMIT</p><h2>Room to make better decisions.</h2></div><span className="pill neutral">Last 8 runs</span></div>{!runs.length ? <div className="empty-state"><Gauge size={32} /><h2>A clean ledger. A fresh start.</h2><p>Run a procurement to see how much of the budget was used.</p><button className="button primary" onClick={() => navigate('workspace')}>Plan your first run <ArrowRight size={16} /></button></div> : <div className="spend-chart">{runs.slice(0, 8).map(item => <button className="spend-row" key={item.id} onClick={() => setOverlay({ kind: 'report', run: item })}><span><strong>{item.task.tokenSymbol}</strong><small>{POLICY_INFO[item.task.policy].label}</small></span><span className="spend-bar"><span style={{ width: `${item.task.budgetCents ? item.totalCents / item.task.budgetCents * 100 : 0}%` }} /></span><span><Money cents={item.totalCents} /> <small>/ {formatMoney(item.task.budgetCents)}</small></span><ArrowUpRight size={15} /></button>)}</div>}<div className="panel-footnote"><span className="chart-legend"><i /> Actual simulated spend</span><span>All values in USDT · no wallet connected</span></div></section></div>}
+        {view === 'treasury' && <div className="treasury-view"><div className="treasury-overview"><section className="panel treasury-summary primary-summary"><Wallet size={24} /><span>Total simulated spend</span><strong><Money cents={totalSpent} /><small>USDT</small></strong><p>Across {runs.length} recorded procurements</p></section><section className="panel treasury-summary"><FileCheck2 size={24} /><span>Delivered snapshots</span><strong>{completedCount}<small>/ {runs.length} runs</small></strong><p>Accepted after the selected checks</p></section><section className="panel treasury-summary"><ShieldCheck size={24} /><span>Budget overruns</span><strong>{runs.filter(item => item.totalCents > item.task.budgetCents).length}</strong><p>Spending ceilings enforced by the planner</p></section></div><section className="panel"><div className="panel-heading"><div><p className="eyebrow muted">SPEND VERSUS LIMIT</p><h2>Room to make better decisions.</h2></div><span className="pill neutral">Last 8 runs</span></div>{!runs.length ? <div className="empty-state"><Gauge size={32} /><h2>A clean ledger. A fresh start.</h2><p>Run a procurement to see how much of the budget was used.</p><button className="button primary" onClick={() => navigate('workspace')}>Plan your first run <ArrowRight size={16} /></button></div> : <div className="spend-chart">{runs.slice(0, 8).map(item => <button className="spend-row" key={item.id} onClick={() => setOverlay({ kind: 'report', run: item })}><span><strong>{item.task.tokenSymbol}</strong><small>{POLICY_INFO[item.task.policy].label}</small></span><span className="spend-bar"><span style={{ width: `${item.task.budgetCents ? item.totalCents / item.task.budgetCents * 100 : 0}%` }} /></span><span><Money cents={item.totalCents} /> <small>/ {formatMoney(item.task.budgetCents)}</small></span><ArrowUpRight size={15} /></button>)}</div>}<div className="panel-footnote"><span className="chart-legend"><i /> Simulated spend</span><span>All values in USDT · no wallet connected</span></div></section><AgentLedgerPanel runs={runs} /></div>}
 
         <footer className="app-footer"><span><FlaskConical size={13} /> Simulated providers, payments & evidence. Always.</span><span>Built with intention for <a href="https://luma.com/l4aq8vii" target="_blank" rel="noreferrer">OKX Dev Day <ArrowUpRight size={11} /></a></span></footer>
       </main>

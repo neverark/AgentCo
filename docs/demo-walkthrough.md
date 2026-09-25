@@ -1,12 +1,10 @@
 # AgentCo: a three-minute demo walkthrough
 
-**English** | [简体中文](demo-walkthrough.zh-CN.md)
-
-This script demonstrates the local product as implemented. All services, market data, ratings, costs, and payment records are synthetic. There is no wallet connection, paid API call, or real transfer.
+This script demonstrates AgentCo's synthetic procurement flow and its free live call to the OKX.AI-listed [AgentLedger Financial Health](https://www.okx.ai/agents/11336) endpoint (Agent 11336, Service 40038). AgentCo's providers, token findings, budgets, and payment records remain synthetic; the external service returns a real computation over aggregate synthetic inputs. No paid operation or real transfer is involved.
 
 ## Before the demo
 
-Run `npm install` and `npm run dev`, then open [localhost:5173](http://localhost:5173). Start with a fresh browser profile or private window to use the initial seeded history. Refreshing the page, choosing `New task`, or using `Reset run` preserves the current browser's run history. Observations from the most recent 30 simulated runs influence future provider selection.
+Run `npm install` and `npm run dev`, then open [localhost:5173](http://localhost:5173). The Vite dev server proxies the AgentLedger request to its public HTTPS endpoint because the endpoint does not allow browser-origin requests. A Vercel deployment serves the same proxy path through the included serverless function. Start with a fresh browser profile or private window to use the initial seeded history. Refreshing the page, choosing `New task`, or using `Reset run` preserves the current browser's run history. Observations from the most recent 30 simulated runs influence future provider selection.
 
 The default task uses the example AERO address on Base, with a `Spend limit` of **0.50 USDT** and a `Delivery window` of **45 sec**. The real address serves only as a task identifier; entering it does not query live market data. The fixed costs below assume this budget, deadline, and initial history.
 
@@ -20,7 +18,7 @@ The default task uses the example AERO address on Base, with a `Spend limit` of 
 
 Stay in `Workspace`.
 
-> “AgentCo is a workspace that procures AI services on your behalf. I give it a task, a budget, and quality requirements. It selects services, controls spending, checks results, and records every decision. The Demo environment indicator at the top right means this run is entirely simulated, with no real funds involved.”
+> “AgentCo is a workspace that procures AI services on your behalf. I give it a task, a budget, and quality requirements. It selects services, controls spending, checks results, and records every decision. The Demo environment indicator marks these procurement records as simulated; this run uses no real funds.”
 
 Point to `Token contract`, `Network`, `Spend limit`, and the three policy cards. Explain that the same task can use different procurement approaches.
 
@@ -56,11 +54,13 @@ Select `Response timeout` and run it.
 
 If time is short, use the step button to advance to this event.
 
-## 2:40–3:10 · Leave a traceable record
+## 2:40–3:10 · Call the listed service and inspect provenance
 
-Open `Run history` to review the outcomes and costs of the three scenarios. Switch to `Treasury` to compare spending with budgets. If useful, open `Agent directory` to inspect provider profiles and acceptance samples.
+Open `Run history` to review the outcomes and costs. Switch to `Treasury` and click `Run free external assessment` in the AgentLedger panel. The action sends only a 30-day aggregate: synthetic task budgets, simulated provider spend, call counts, and zero recorded inflows. It sends no token address, token symbol, run ID, or journal event.
 
-> “Every outcome enters local simulated history and informs future selection. Users can trace why a service was chosen, how much was spent, which evidence passed, and what was left unchecked. This demo shows the complete procurement experience; real OKX service and payment integration will be separate future work.”
+> “The procurement records above are synthetic. This button made a separate live, free call to AgentLedger Financial Health, an OKX.AI-listed service. It returned budget-use and provider-concentration findings from the aggregates we supplied. The response says `caller_supplied`, so it confirms the computation came from our input; it does not verify the underlying ledger.”
+
+Point to the **44% budget use**, **$0.28 remaining**, and **90.91% largest provider share** from the default Balanced run, then open the AgentLedger OKX.AI listing link. Values can vary with the local run history. The result panel omits cash-flow and overall-health conclusions because AgentCo has no income records. It also discloses that synthetic USDT amounts were passed numerically into the service's USD schema without an FX conversion.
 
 ## Optional extension: insufficient budget
 
